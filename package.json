@@ -1,9 +1,21 @@
 {
   "name": "daiwa-hooks",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "files": [
+    "lib/",
+    "esm/"
+  ],
+  "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
   "author": "daiwa <daiwaaa@163.com>",
   "license": "MIT",
+  "scripts": {
+    "build:cjs": "tsc",
+    "build:es": "tsc -m esNext --outDir esm",
+    "build": "yarn build:cjs && yarn build:es"
+  },
   "dependencies": {
     "resize-observer-polyfill": "^1.5.1"
   },
