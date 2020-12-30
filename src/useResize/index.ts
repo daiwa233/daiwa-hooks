@@ -20,8 +20,8 @@ const useResize = (config: UseResizeConfig) => {
       return;
     }
     // todo 优化为单例
-    let resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
         const {
           contentRect: { width },
         } = entry;
