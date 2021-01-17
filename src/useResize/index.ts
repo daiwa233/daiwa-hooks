@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
-import { UseResizeConfig, UseResizeProps } from './type';
+import { UseResizeConfig } from './type';
 import { isFun, isNumber, isObject, isString } from '../util';
 import ResizeObserver from 'resize-observer-polyfill';
 import { genResizeCallback } from './util';
-
-const EMPTY_TARGET_KEY = 'empty';
 
 const useResizeInternal = (config: UseResizeConfig) => {
   const { resizeConfig, target } = config;
@@ -49,34 +47,38 @@ const useResizeInternal = (config: UseResizeConfig) => {
 };
 
 const genUseResize = () => {
-  const configs: Record<string | symbol, UseResizeProps[]> = {};
+  const configs = new Map();
   return (onBreakpoint: (broken: boolean) => void, breakpoint: number, target?: string | Element) => {
     if (!target) {
-      if (!configs[EMPTY_TARGET_KEY]) {
-        configs[EMPTY_TARGET_KEY] = [];
+      if (!configs.has(document.body)) {
+        configs.set(document.body, []);
       }
-      configs[EMPTY_TARGET_KEY].push({ onBreakpoint, breakpoint });
-    } else if (isString(target)) {
-      if (!configs[target]) {
-        configs[target] = [];
+      configs.get(document.body).push({ onBreakpoint, breakpoint });
+    } else if (isString(target) || isObject(target)) {
+      if (!configs.has(target)) {
+        configs.set(target, []);
       }
-      configs[target].push({ onBreakpoint, breakpoint });
-    } else if (isObject(target)) {
-      const key: any = Symbol(target.toString());
-      configs[key] = ([] as UseResizeProps[]).concat({ onBreakpoint, breakpoint, target });
+      configs.get(target).push({ onBreakpoint, breakpoint });
     } else {
       throw new Error('the type of target is not expected');
     }
 
-    Object.keys(configs).forEach((key) => {
-      if (typeof key === 'symbol') {
-        useResizeInternal({ resizeConfig: configs[key], target: configs[key][0].target });
-      } else if (key === EMPTY_TARGET_KEY) {
-        useResizeInternal({ resizeConfig: configs[key] });
-      } else {
-        useResizeInternal({ resizeConfig: configs[key], target: key });
-      }
-    });
+    for (const key of configs.keys()) {
+      useResizeInternal({ resizeConfig: configs.get(key), target: key });
+    }
+
+    useEffect(() => {
+      return () => {
+        const key = target || document.body;
+        const arr = configs.get(key);
+        if (arr.length > 1) {
+          const idx = arr.findIndex((item) => item.onBreakpoint === onBreakpoint && item.breakpoint === breakpoint);
+          idx && arr.splice(idx, 1);
+        } else {
+          configs.delete(key);
+        }
+      };
+    }, []);
   };
 };
 

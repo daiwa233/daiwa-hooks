@@ -16,6 +16,7 @@
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": true,
     "outDir": "lib",
+    "downlevelIteration": true,
     "lib": [
       "es2018",
       "dom"
