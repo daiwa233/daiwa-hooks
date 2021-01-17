@@ -8,8 +8,8 @@
 | 参数 | 类型 | 说明 | 默认值 |  
 | ---- | ---- | ---- | --- | 
 | breakpoint | number | 触发响应式布局的断点 单位为 px | - |
-| onBreakpoint | (broken: boolean) => void; | | 触发断点时的回调。 broken 为 true 时代表当前待观测元素的宽度大于 breakpoint。为 false 时反之。 只会触发一次。
-| target | string / Element | 待观测的目标元素 | document.body
+| onBreakpoint | (broken: boolean) => void; | 触发断点时的回调。 broken 为 true 时代表当前待观测元素的宽度大于 breakpoint。为 false 时反之。 只会触发一次。 | - | 
+| target | string / Element | 待观测的目标元素 | document.body |
 
 
 ## tips
