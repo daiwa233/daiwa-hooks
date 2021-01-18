@@ -28,6 +28,8 @@
     "lib",
     "esm",
     "tests",
+    "**/__mocks__/**",
+    "**/__tests__/**",
     "stories"
   ]
 }
