@@ -25,13 +25,9 @@ interface useLoadMoreOptions {
 // useLoadMore type 
 (fetchDataFn: fetchDataFnType, options: useLoadMoreOptions) => UseLoadMoreReturnProps;
 ```
-// 默认传入 fetchFn 中分页参数，Key 为 PageSize PageNumber。如果需要增加传参和修改 key ，可以额外添加一些逻辑
+> 默认传入 fetchFn 中为分页参数，Key 为 PageSize PageNumber。如果需要增加传参和修改 key ，可以在 fetchFn 中额外添加一些逻辑
 
-### Return Type
 
-```ts
-
-```
 ## TODO
 - [ ] 完善 README， 添加 usage
 - [ ] 单测
