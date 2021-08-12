@@ -31,4 +31,4 @@ interface useLoadMoreOptions {
 ## TODO
 - [ ] 完善 README， 添加 usage
 - [ ] 单测
-- [ ] 解决首次渲染时会触发两次 fetchData 
+- [x] 解决首次渲染时会触发两次 fetchData 

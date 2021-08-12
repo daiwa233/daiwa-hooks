@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useReducer, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface UseLoadMoreReturnProps {
   data: any[];
@@ -21,7 +21,6 @@ const useLoadMore = (
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const rollbackRef = useRef(false);
-  const [updateFlag, forceUpdate] = useReducer((x) => x + 1, 0);
 
   const fetchData = async () => {
     if (rollbackRef.current) {
@@ -55,7 +54,13 @@ const useLoadMore = (
     } catch (err) {
       console.log(err);
       // 请求出错时需要回滚 PageNumber 状态, 同时不能新发请求
-      setPageNumber((state) => (state - 1 > 1 ? state - 1 : 1));
+      setPageNumber((state) => {
+        if (state > 1) {
+          rollbackRef.current = true;
+          return state - 1;
+        }
+        return 1;
+      });
       rollbackRef.current = true;
     } finally {
       setLoading(false);
@@ -63,16 +68,30 @@ const useLoadMore = (
   };
   // 当外部变量变化时，重置 pageNumber 和 hasMore
   useEffect(() => {
-    setPageNumber(1);
+    setPageNumber((state) => {
+      if (state === 1) {
+        fetchData();
+      }
+      return 1;
+    });
     setHasMore(true);
-    // // 当内部状态没变化时，需要依靠这个来触发 fetchData
-    forceUpdate();
-  }, [pageSize, ...effectArr]);
+  }, [pageSize]);
+
+  // 当外部变量变化时，重置 pageNumber 和 hasMore
+  useEffect(() => {
+    setPageNumber((state) => {
+      if (state === 1) {
+        fetchData();
+      }
+      return 1;
+    });
+    setHasMore(true);
+  }, [...effectArr]);
 
   // 触发重新 fetchData 时只有在 pageNumbe 变化时去 fetchData
   useEffect(() => {
     fetchData();
-  }, [pageNumber, updateFlag]);
+  }, [pageNumber]);
 
   const handleLoadMore = useCallback(() => {
     setPageNumber((state) => state + 1);
