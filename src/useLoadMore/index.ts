@@ -1,19 +1,19 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-interface UseLoadMoreReturnProps {
-  data: any[];
+interface UseLoadMoreReturnProps<T> {
+  data: T[];
   handleLoadMore: () => void;
   hasMore: boolean;
   loading: boolean;
 }
 
-const useLoadMore = (
+const useLoadMore = <T>(
   fetchDataFn: (arg: { PageSize: number; PageNumber: number }) => Promise<unknown>,
   options: {
     size: number;
     effects?: any[];
   }
-): UseLoadMoreReturnProps => {
+): UseLoadMoreReturnProps<T> => {
   const pageSize = options?.size || 24;
   const effectArr = options.effects || [];
   const [data, setData] = useState<any[]>([]);
